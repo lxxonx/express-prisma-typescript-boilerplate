@@ -1,0 +1,87 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  name String [not null]
+  phone String [unique, not null]
+  email String [unique, not null]
+  birthday DateTime [not null]
+  address String [not null]
+  username String [not null]
+  password String [not null]
+  isCorp Boolean [not null, default: false]
+  isPaid Boolean [not null, default: false]
+  lcmgAddress String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  node Node
+  documents Document [not null]
+  sales Sales [not null]
+}
+
+Table WalletChangeLog {
+  id Int [pk, increment]
+  userId String [not null]
+  before String [not null]
+  after String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table Node {
+  id Int [pk, increment]
+  user User [not null]
+  userId String [unique, not null]
+  parent Node [not null]
+  parentId Int [not null]
+  children Node [not null]
+  position Int [not null]
+  recentSales Sales [not null]
+  salesId Int [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table Sales {
+  id Int [pk, increment]
+  user User [not null]
+  userId String [not null]
+  amount Int [not null]
+  Node Node
+  month DateTime [unique, not null]
+}
+
+Table Commission {
+  id Int [pk, increment]
+  userId String [not null]
+  amount Int [not null]
+  type String [not null, note: '진입 수당, 가맹점 수당, 대리점 수당, 법인 수당, 지점장 수당, 본부장 수당']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table Document {
+  id Int [pk, increment]
+  user User [not null]
+  userId String [not null]
+  application String
+  agreement String
+  identification String
+  bankAccount String
+  contract String
+  others String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Ref: Node.userId - User.id
+
+Ref: Node.parentId - Node.id
+
+Ref: Node.salesId - Sales.id
+
+Ref: Sales.userId > User.id
+
+Ref: Document.userId > User.id
